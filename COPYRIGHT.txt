@@ -2,7 +2,7 @@
 
 - I, cinupe will waive the right to issue any DMCA, or takedown requests against any copies of this software, unmodified, or modified.
 - I also grant you the permission to freely distribute, copy, sublicense, or sell in whole part or in part, for any purpose.
-- This application is provided as-is, without any warranty or liability, as it is a free release.
+- This application is provided as-is, without any warranty or liability, as it is a free application.
 
 Updates to the application will NOT be mandatory, neither will they be forced-upon. 
 Any update of the Copyright Terms, may they only apply to future versions and packages
