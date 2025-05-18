@@ -800,6 +800,7 @@ def exitmenus():
     tpPinwheelCircus.place_forget()
     tpMysteriousMine.place_forget()
     tpHalloweenBackstage.place_forget()
+    tpScott.place_forget()
 
     tppresetsb.place_forget()
     modifycoordsb.place_forget()
