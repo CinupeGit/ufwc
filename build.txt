@@ -1,4 +1,0 @@
-ver=25w20a
-copr=COPYRIGHT.txt
-name=UFWC
-icon=icon.ico
