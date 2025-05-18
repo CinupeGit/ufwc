@@ -1,3 +1,11 @@
+# lets be honest, im a dumbass for coding this entire project in one file, but its whatever. even if i did try to reorganize it,
+# it'd take years since theres already like 800 lines.
+
+# coding it in one file is gross because of well, organization
+
+# [pre settings you can change if you wanna just mess around]
+can_resize_window = True
+
 from PIL import Image, ImageTk
 import os
 import tkinter as tk
@@ -23,13 +31,10 @@ root = tk.Tk()
 root.config(bg=bgc)
 root.title('Untitled FNaF World Cheat (UFWC)')
 root.iconbitmap(bitmapicon)
-root.geometry('1147x650')
+root.geometry('1147x650+0+0')
+if not can_resize_window:
+    root.resizable(False,False)
 root.config(cursor=r'@assets/images/cursor.cur')
-
-
-# root.attributes('-topmost', True)
-# root.resizable(width=False,height=False)
-
 
 titlescreenbg = ImageTk.PhotoImage(Image.open('assets\\images\\backgrounds\\title.png').resize((1147,650)))
 placeholderbg = ImageTk.PhotoImage(Image.open('assets\\images\\backgrounds\\placeholder.png').resize((1147,650)))
@@ -47,6 +52,7 @@ lilygearlakebgFITB = ImageTk.PhotoImage(Image.open('assets\\images\\backgrounds\
 blacktombyardbgFITB = ImageTk.PhotoImage(Image.open('assets\\images\\backgrounds\\blacktombyard.png').resize((420,100)))
 pinwheelcircusbgFITB = ImageTk.PhotoImage(Image.open('assets\\images\\backgrounds\\pinwheelcircus.png').resize((420,100)))
 minebgFITB = ImageTk.PhotoImage(Image.open('assets\\images\\backgrounds\\mine.png').resize((420,100)))
+scottFITBG = ImageTk.PhotoImage(Image.open('assets\\images\\backgrounds\\scottfitbg.png').resize((420,100)))
 
 
 halloweenbg = ImageTk.PhotoImage(Image.open('assets\\images\\backgrounds\\halloween.png').resize((420,100)))
@@ -65,12 +71,17 @@ mainmenuadd = ImageTk.PhotoImage(Image.open('assets\\images\\add.png').resize((4
 mainmenurev = ImageTk.PhotoImage(Image.open('assets\\images\\revoke.png').resize((447,110)))
 
 mainmenupreset = ImageTk.PhotoImage(Image.open('assets\\images\\presets.png').resize((447,110)))
+
 continueimg = ImageTk.PhotoImage(Image.open('assets\\images\\continue.png').resize((447,110)))
+
+requiredasterisk = ImageTk.PhotoImage(Image.open('assets\\images\\required.png').resize((76,48)))
 
 posimg = ImageTk.PhotoImage(Image.open('assets\\images\\position.png').resize((447,110)))
 charimg = ImageTk.PhotoImage(Image.open('assets\\images\\char.png').resize((447,110)))
 miscimg = ImageTk.PhotoImage(Image.open('assets\\images\\misc.png').resize((447,110)))
 doneimg = ImageTk.PhotoImage(Image.open('assets\\images\\done.png').resize((167,60)))
+idlistimg = ImageTk.PhotoImage(Image.open('assets\\images\\idlist.png').resize((350,83)))
+setlevelimg = ImageTk.PhotoImage(Image.open('assets\\images\\setlevel.png').resize((350,83)))
 
 dialogeimg = ImageTk.PhotoImage(Image.open('assets\\images\\dialogebox.png').resize((860,300)))
 dialogeimgarrow = ImageTk.PhotoImage(Image.open('assets\\images\\dialogearrow.png'))
@@ -203,25 +214,12 @@ if os.path.exists('fnafw3'):
 
 
 
-
-if os.path.exists('fnafw1'):
-    titlescreencanvas.itemconfig(createTitlescreenB1, text=f'{fnafw1model}: {fnafw1diffl}: {fnafw1hour}:{fnafw1min}')
-
-if os.path.exists('fnafw2'):
-    titlescreencanvas.itemconfig(createTitlescreenB2, text=f'{fnafw2model}: {fnafw2diffl}: {fnafw2hour}:{fnafw2min}')
-
-if os.path.exists('fnafw3'):
-    titlescreencanvas.itemconfig(createTitlescreenB3, text=f'{fnafw3model}: {fnafw3diffl}: {fnafw3hour}:{fnafw3min}')
-
-
-
-
-
 def showinfo(msg:str,title:str):
     ctypes.windll.user32.MessageBoxW(0, msg, title, 0x40)
 
 
 def notice():
+    root.withdraw()
     global noticeroot
     global noticetkca
     global FredbearAnim
@@ -255,38 +253,38 @@ def notice():
 
     noticetkca.pack()
     root.wait_window(noticeroot)
+    root.deiconify()
 
-root.withdraw()
-notice()
-root.deiconify()
 
 
 def animFredbearLoop(frame=1):
-    global FredbearAnim
-    anim_frames = [
-        animFredbear1,
-        animFredbear2,
-        animFredbear3,
-        animFredbear4,
-        animFredbear5,
-        animFredbear6,
-        animFredbear7,
-        animFredbear8,
-        animFredbear9,
-        animFredbear10
-    ]
+    if noticeroot.winfo_exists():
+        global FredbearAnim
+        anim_frames = [
+            animFredbear1,
+            animFredbear2,
+            animFredbear3,
+            animFredbear4,
+            animFredbear5,
+            animFredbear6,
+            animFredbear7,
+            animFredbear8,
+            animFredbear9,
+            animFredbear10
+        ]
 
-    if noticeroot.focus_get():
-        noticetkca.itemconfig(FredbearAnim,image=anim_frames[frame%len(anim_frames)])
-    noticeroot.after(30,animFredbearLoop,(frame + 1)%len(anim_frames))
+        if noticeroot.focus_get():
+            noticetkca.itemconfig(FredbearAnim,image=anim_frames[frame%len(anim_frames)])
+        noticeroot.after(30,animFredbearLoop,(frame + 1)%len(anim_frames))
 
-threading.Thread(target=animFredbearLoop).start()
 
 
 
 def settings():
     if not os.path.exists('ufwc'):
         os.mkdir('ufwc')
+        notice()
+        threading.Thread(target=animFredbearLoop).start()
     else:
         pass
 
@@ -318,6 +316,21 @@ def loadSlot3():
 loadslot1 = tkb(text='Slot 1',bg='green',fg='white',command=loadSlot1,image=titlescreenloads1,relief='flat')
 loadslot2 = tkb(text='Slot 2',bg='green',fg='white',command=loadSlot2,image=titlescreenloads2,relief='flat')
 loadslot3 = tkb(text='Slot 3',bg='green',fg='white',command=loadSlot3,image=titlescreenloads3,relief='flat')
+
+if os.path.exists('fnafw1'):
+    titlescreencanvas.itemconfig(createTitlescreenB1, text=f'{fnafw1model}: {fnafw1diffl}: {fnafw1hour}:{fnafw1min}')
+else:
+    loadslot1.config(state='disabled')
+
+if os.path.exists('fnafw2'):
+    titlescreencanvas.itemconfig(createTitlescreenB2, text=f'{fnafw2model}: {fnafw2diffl}: {fnafw2hour}:{fnafw2min}')
+else:
+    loadslot2.config(state='disabled')
+
+if os.path.exists('fnafw3'):
+    titlescreencanvas.itemconfig(createTitlescreenB3, text=f'{fnafw3model}: {fnafw3diffl}: {fnafw3hour}:{fnafw3min}')
+else:
+    loadslot3.config(state='disabled')
 
 loadslot1.place(x=350,y=157,width=437,height=109)
 loadslot2.place(x=350,y=302,width=437,height=109)
@@ -371,6 +384,7 @@ pMysteriousMine = 11
 pPinwheelCircus = 20
 pDeepMetalMine = 17
 pHalloweenBackstage = 'HalloweenBackstage' # it doesnt have an area code lol
+pScott = 'Scott' # ALSO doesnt have an area code 
 
 lFazbearHills = 'Fazbear Hills'
 lChoppysWoods = 'Choppys Woods'
@@ -381,6 +395,7 @@ lMysteriousMine = 'Mysterious Mine'
 lPinwheelCircus = 'Pinwheel Circus'
 lDeepMetalMine = 'Deep-Metal Mine'
 lHalloweenBackstage = 'Halloween Backstage'
+lScott = 'Scott'
 
 locxFazbearHills = 1829
 locyFazbearHills = 1024
@@ -398,8 +413,11 @@ locxMysteriousMine = 2193
 locyMysteriousMine = 1570
 locxHalloweenBackstage = 1173
 locyHalloweenBackstage = 934
+locxScott = 1324
+locyScott = 486
 
-characterlist = '''
+
+characterlist = '''real quick side note that character versions are abbreviated example like NPuppet, TBonnie, and PBB (PBB is Phantom Balloon Boy, TBonnie Toy Bonnie, NPuppet NightmarePuppet.. etc)
 FreddyFazbear = '1'
 Bonnie = '2'
 Chica = '3'
@@ -450,6 +468,16 @@ Coffee = '47'
 PurpleGuy = '48'
 '''
 
+if not os.path.exists('ufwc\\charlist.txt'):
+    with open('ufwc\\charlist.txt', 'w') as charlisttxt:
+        charlisttxt.write(characterlist)
+else:
+    with open('ufwc\\charlist.txt', 'r') as charlisttxt:
+        characterlisttext = charlisttxt.read()
+        if not characterlisttext == characterlist:
+            with open('ufwc\\charlist.txt', 'w') as charlisttxt:
+                charlisttxt.write(characterlist)
+
 
 def modifycoordscpre(slot,xc,yc):
 
@@ -470,6 +498,7 @@ def modifycoordscpre(slot,xc,yc):
     tpPinwheelCircus.place_forget()
     tpMysteriousMine.place_forget()
     tpHalloweenBackstage.place_forget()
+    tpScott.place_forget()
 
 def tpcustompreenter(area):
     if area == pFazbearHills:
@@ -488,6 +517,8 @@ def tpcustompreenter(area):
         modifycoordscpre(xc=locxMysteriousMine,yc=locyMysteriousMine,slot=applyslot)
     elif area == pHalloweenBackstage:
         modifycoordscpre(xc=locxHalloweenBackstage,yc=locyHalloweenBackstage,slot=applyslot)
+    elif area == pScott:
+        modifycoordscpre(xc=locxScott,yc=locyScott,slot=applyslot)
 
     tppresetsb.place(x=350,y=447,width=437,height=109)
     modifycoordsb.place(x=350,y=324,width=437,height=109)
@@ -508,94 +539,95 @@ loadPosition = tkb(text='Position',bg='green',fg='white',command=lambda: loadPos
 loadCharacters = tkb(text='Characters',bg='green',fg='white',command=lambda: loadCharGui(applyslot),image=charimg,relief='flat')
 loadMisc = tkb(text='Miscellaneous',bg='green',fg='white',command=lambda: loadMiscGui(applyslot),image=miscimg,relief='flat')
 
+unibuttoncolor = 'green'
 
 makemainmenubg = mainmenubgFHtkca.create_image(573, 325,image=titlescreenbg)
+
+def syncbuttoncolors():
+    loadMisc.config(bg=unibuttoncolor)
+    loadCharacters.config(bg=unibuttoncolor)
+    loadPosition.config(bg=unibuttoncolor)
+    loadMisc.config(bg=unibuttoncolor)
+    modcharida.config(bg=unibuttoncolor)
+    modcharidr.config(bg=unibuttoncolor)
+    showcharid.config(bg=unibuttoncolor)
+    modifycoordsb.config(bg=unibuttoncolor)
+    tppresetsb.config(bg=unibuttoncolor)
+
+
+
 def findArea():
     whereistheareaarea = iniconfig.getint('fnafw','area')
     global yourcurrentarea
+    global unibuttoncolor
     if whereistheareaarea == pFazbearHills:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lFazbearHills)
         
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=titlescreenbg)
-        loadPosition.config(bg='green')
-        loadMisc.config(bg='green')
-        loadCharacters.config(bg='green')
+        unibuttoncolor = 'green'
 
     elif whereistheareaarea == pChoppysWoods:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lChoppysWoods)
 
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=choppyswoodsbg)
-        loadPosition.config(bg='#606d05')
-        loadMisc.config(bg='#606d05')
-        loadCharacters.config(bg='#606d05')
+        unibuttoncolor = '#606d05'
 
     elif whereistheareaarea == pDustingFields:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lDustingFields)
 
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=dustingfieldsbg)
-        loadPosition.config(bg='#6aaee7')
-        loadMisc.config(bg='#6aaee7')
-        loadCharacters.config(bg='#6aaee7')
+        unibuttoncolor = '#6aaee7'
     elif whereistheareaarea == pLilyGearLake:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lLilyGearLake)
 
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=lilygearlakebg)
-        loadPosition.config(bg='#223ff8')
-        loadMisc.config(bg='#223ff8')
-        loadCharacters.config(bg='#223ff8')
+        unibuttoncolor = '#223ff8'
 
     elif whereistheareaarea == pBlacktombYard:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lBlacktombYard)
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=blacktombyardbg)
-        loadPosition.config(bg='#192920')
-        loadMisc.config(bg='#192920')
-        loadCharacters.config(bg='#192920')
+        unibuttoncolor = '#192920'
 
     elif whereistheareaarea == pPinwheelCircus:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lPinwheelCircus)
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=pinwheelcircusbg)
-        loadPosition.config(bg='#54ab00')
-        loadMisc.config(bg='#54ab00')
-        loadCharacters.config(bg='#54ab00')
+        unibuttoncolor = '#54ab00'
 
     elif whereistheareaarea == pMysteriousMine:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lMysteriousMine)
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=minebg)
-        loadPosition.config(bg='#794d22')
-        loadMisc.config(bg='#331a01')
-        loadCharacters.config(bg='#331a01')
+        unibuttoncolor = '#331a01'
+        #794d22 - fixme, preserved to add the secondbuttoncolor
 
     elif whereistheareaarea == pHalloweenBackstage:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lHalloweenBackstage)
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=placeholderbg)
-        loadPosition.config(bg='white')
-        loadMisc.config(bg='white')
-        loadCharacters.config(bg='white')
+        unibuttoncolor = 'white'
+
     elif whereistheareaarea == pDeepMetalMine:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text=lDeepMetalMine)
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=minebg)
-        loadPosition.config(bg='#794d22')
-        loadMisc.config(bg='#331a01')
-        loadCharacters.config(bg='#331a01')
+        unibuttoncolor = '#331a01'
+        #794d22 - fixme, preserved to add the secondbuttoncolor
+
     else:
         if hasloadedposgui:
             mainmenubgFHtkca.itemconfig(yourcurrentarea,text='Can\'t find Area.')
         updbg = mainmenubgFHtkca.itemconfig(makemainmenubg, image=placeholderbg)
-
-
+        unibuttoncolor = 'black'
+    syncbuttoncolors()
 
 
 def loadpresetmenu():
-    tpdemodify.place_forget()
     tppresetsb.place_forget()
     modifycoordsb.place_forget()
     ymodifycoordse.place_forget()
@@ -609,20 +641,28 @@ def loadpresetmenu():
     tpPinwheelCircus.place(x=150,y=524,width=437,height=65)
     tpMysteriousMine.place(x=600,y=184,width=437,height=65)
     tpHalloweenBackstage.place(x=600,y=252,width=437,height=65)
+    tpScott.place(x=600,y=320,width=437,height=65)
 
 def getallcharacters():
     for i in range(1, 49):
         addCharacterlist(slot=applyslot,id=i,aor='a')
 
+def startnotepadtoshowthecharactersid(): #comically large name
+    if os.path.exists('ufwc\\charlist.txt'):
+        os.startfile('ufwc\\charlist.txt')
+    else:
+        showinfo('Dear user, it seems that you may be missing your character list file. Simply restarting the app will regenerate it. Sorry for any inconvience!', 'Oh noes!')
 
 
 ymodifycoordse = tke(width=10,bg=bgcd,fg='white',font=('Arial',16))
 xmodifycoordse = tke(width=10,bg=bgcd,fg='white',font=('Arial',16))
 
-Charshowinfob = tkb(text='ⓘ',width=3,bg=bgcd,fg='white',command= lambda: showinfo('Each character is represented using a unique identifier, as shown on the side of the screen.\nType the Numeric ID into the box and submit your choice.','Info'),font=('Arial',16),relief='flat')
+Charshowinfob = tkb(text='ⓘ',width=3,bg=bgcd,fg='white',command=lambda: showinfo('Each character is represented using a unique identifier, as shown on the side of the screen.\nType the Numeric ID into the box and submit your choice.','Info'),font=('Arial',16),relief='flat')
+showcharid = tkb(text='View Character ID\'s',bg='green',fg='white',command=startnotepadtoshowthecharactersid,image=idlistimg,relief='flat')
+
 
 setlevelchare = tke(width=20,bg=bgcd,fg='white',font=('Arial',26))
-setlevelcharb = tkb(text='Set Level',width=20,bg=bgcd,fg='white',font=('Arial',16),pady=10,command= lambda: managelevels(slot=applyslot,levels=setlevelchare.get(),id=entercharid.get()))
+setlevelb = tkb(text='Set Level',bg='green',fg='white',command=lambda: managelevels(slot=applyslot,levels=setlevelchare.get(),id=entercharid),image=setlevelimg,relief='flat')
 
 getallcharactersb = tkb(text='Get All Characters',width=20,bg=bgcd,fg='white',font=('Arial',16),pady=10,command= lambda: getallcharacters())
 
@@ -631,17 +671,16 @@ settokense = tke(width=20,bg=bgcd,fg='white',font=('Arial',26))
 settokensb = tkb(text='Set Tokens',width=20,bg=bgcd,fg='white',font=('Arial',16),pady=10,command= lambda: managetokens(slot=applyslot,tokens=settokense.get()))
 skipfishclb = tkb(text='Skip DeeDee Fish Cooldown',width=25,bg=bgcd,fg='white',font=('Arial',16),pady=10,command= lambda: skipfishcooldown(slot=applyslot))
 
-# setlevelchare.insert(0, 's')
-
 entercharid = tke(width=20,bg=bgcd,fg='white',font=('Arial',26))
-modcharida = tkb(text='ADD',width=20,bg=bgcd,fg='white',font=('Arial',26),pady=10,command= lambda: addCharacterlist(slot=applyslot,id=entercharid.get(),aor='a'))
-modcharidr = tkb(text='REVOKE',width=20,bg=bgcd,fg='white',font=('Arial',26),pady=10,command= lambda: addCharacterlist(slot=applyslot,id=entercharid.get(),aor='r'))
 
-tpdemodify = tke(width=20,bg=bgcd,fg='white',font=('Arial',26))
+modcharida = tkb(text='ADD',bg='green',fg='white',command=lambda: addCharacterlist(slot=applyslot,id=entercharid.get(),aor='a'),image=mainmenuadd,relief='flat')
+modcharidr = tkb(text='REVOKE',bg='green',fg='white',command=lambda: addCharacterlist(slot=applyslot,id=entercharid.get(),aor='r'),image=mainmenurev,relief='flat')
 
 tppresetsb = tkb(text='Presets',bg='green',fg='white',command=loadpresetmenu,image=mainmenupreset,relief='flat')
 modifycoordsb = tkb(text='Teleport',bg='green',fg='white',command=lambda: modifycoords(applyslot),image=continueimg,relief='flat')
 
+entercharid.insert(0,'ID')
+setlevelchare.insert(0,'LEVELS')
 
 
 
@@ -653,6 +692,7 @@ tpBlacktombYard = tkb(text=lBlacktombYard,bg=bgcd,pady=10,fg='white',height=2,fo
 tpPinwheelCircus = tkb(text=lPinwheelCircus,bg=bgcd,pady=10,fg='white',height=2,font=('Arial',9),command=lambda: tpcustompreenter(pPinwheelCircus),image=pinwheelcircusbgFITB)
 tpMysteriousMine = tkb(text=lMysteriousMine,bg=bgcd,pady=10,fg='white',height=2,font=('Arial',9),command=lambda: tpcustompreenter(pMysteriousMine),image=minebgFITB)
 tpHalloweenBackstage = tkb(text=lHalloweenBackstage,bg=bgcd,pady=10,fg='white',height=2,font=('Arial',9),command=lambda: tpcustompreenter(pHalloweenBackstage),image=halloweenbg)
+tpScott = tkb(text=lScott,bg=bgcd,pady=10,fg='white',height=2,font=('Arial',9),command=lambda: tpcustompreenter(pScott),image=scottFITBG)
 
 
 
@@ -666,24 +706,30 @@ tpHalloweenBackstage = tkb(text=lHalloweenBackstage,bg=bgcd,pady=10,fg='white',h
 # posmenuLtpHalloweenBackstage = tkl(text=lHalloweenBackstage,font=('Itim',16))
 
 # so i was going to add them for a label on the presets menu but id have to make so much canvas gazebos i just didnt
+# you can if you want lmao
 
 
 
 def addCharacterlist(slot,id:str,aor:str):
 
-    if aor == 'a':
-        charid = f'{id}have'
-        iniconfig.read(slot)
-        iniconfig.set('fnafw',charid,'1')
-        with open(slot,'w') as configfile:
-            iniconfig.write(configfile)
-    elif aor == 'r':
-        iniconfig.read(slot)
-        charid = f'{id}have'
-        iniconfig.set('fnafw',charid,'0')
-        with open(slot,'w') as configfile:
-            iniconfig.write(configfile)
-            
+    checkifiseqid = id.lower()
+
+    if id == '' or not checkifiseqid.isdigit() or not (1 <= int(id) <= 48):
+        showinfo('ID Field cannot be blank and must be numeric. Numeric value ranges from 1-48','UFWC')
+    else:
+        if aor == 'a':
+            charid = f'{id}have'
+            iniconfig.read(slot)
+            iniconfig.set('fnafw',charid,'1')
+            with open(slot,'w') as configfile:
+                iniconfig.write(configfile)
+        elif aor == 'r':
+            iniconfig.read(slot)
+            charid = f'{id}have'
+            iniconfig.set('fnafw',charid,'0')
+            with open(slot,'w') as configfile:
+                iniconfig.write(configfile)
+                
 def managetokens(slot,tokens:str):
     iniconfig.read(slot)
     iniconfig.set('fnafw','tokens',tokens)
@@ -709,35 +755,42 @@ hasloadedposgui = False
 def exitmenus():
     global yourcurrentpos
     global hasloadedposgui
+    global charidrequired
+
+    try:
+        mainmenubgFHtkca.delete(yourcurrentpos) # prevent python from going full fucking PANIC because except pass makes python forget it ever happened
+        mainmenubgFHtkca.delete(yourcurrentarea)
+    except NameError:
+        pass
+
     hasloadedposgui = False
     mainmenubgFHtkca.itemconfig(Mainmenuheader, image=titlescreenslchtxt)
-    mainmenubgFHtkca.delete(yourcurrentpos)
-    mainmenubgFHtkca.delete(yourcurrentarea)
 
 
-    charlabel.pack_forget()
-    container.pack_forget()
-    canvas.pack_forget()
-    scrollbar.pack_forget()
-    characterlisttext.pack_forget()
-    entercharid.pack_forget()
-    modcharida.pack_forget()
-    modcharidr.pack_forget()
-    setlevelchare.pack_forget()
-    setlevelcharb.pack_forget()
+    try:
+         mainmenubgFHtkca.delete(charidrequired) # another "shut the fuck up" to python
+    except NameError:
+        pass
+
+    try:
+        mainmenubgFHtkca.delete(nothingtoseeheretxt) # once again, so python will shut its trap
+    except NameError:
+        pass
+    
+
+    entercharid.place_forget()
+    modcharida.place_forget()
+    modcharidr.place_forget()
+    setlevelchare.place_forget()
+    setlevelb.place_forget()    
     Charshowinfob.place_forget()
-    getallcharactersb.place_forget()
+    showcharid.place_forget()
+    # getallcharactersb.place_forget() - fixme, add 'get all' button soon
 
     misclabel.pack_forget()
     settokense.pack_forget()
     settokensb.pack_forget()
     skipfishclb.pack_forget()
-
-    tppresetsb.pack_forget()
-    ymodifycoordse.pack_forget()
-    xmodifycoordse.pack_forget()
-    ymodifycoordse.pack_forget()
-    modifycoordsb.pack_forget()
 
     tpFazbearHills.place_forget()
     tpChoppysWoods.place_forget()
@@ -758,55 +811,59 @@ def exitmenus():
     LaunchMainApp()
 
 
-container = tkf(bg=bgcd,width=250)
-canvas = tk.Canvas(container,width=150,bg=bgcd,highlightthickness=0)
-scrollbar = tks(container,orient='vertical',command=canvas.yview)
-characterlists = tkf(canvas,bg=bgcd)
-characterlisttext = tkl(characterlists,text=characterlist,fg='white',bg=bgcd,font=('Arial',12))
-
 Mainmenuheader = mainmenubgFHtkca.create_image(570, 80,image=titlescreenslchtxt)
 
-
 def loadCharGui(slot):
+    global charidrequired
+    mainmenubgFHtkca.itemconfig(Mainmenuheader, image=transparentimg)
 
-    loadPosition.pack_forget()
-    loadCharacters.pack_forget()
-    loadMisc.pack_forget()
-    charlabel.pack()
-    container.pack(side='left',anchor='n',fill='y')
-    canvas.pack(side='left',fill='y',expand=True)
-    scrollbar.pack(side='right',fill='y')
-    canvas.configure(yscrollcommand=scrollbar.set)
-    container.pack_propagate(False)
-    canvas.create_window((0,0),window=characterlists,anchor='nw')
-    def update_scrollregion(event):
-        canvas.configure(scrollregion=canvas.bbox('all'))
+    loadMisc.place_forget()
+    loadPosition.place_forget()
+    loadCharacters.place_forget()
 
-    characterlists.bind('<Configure>',update_scrollregion)
-    characterlisttext.pack()
+    showcharid.place(x=10,y=552)
 
-    entercharid.pack(pady=50)
-    modcharida.pack()
-    modcharidr.pack()
-    setlevelchare.pack(pady=30)
-    setlevelcharb.pack(pady=10)
-    Charshowinfob.place(x=750,y=550)
-    exitmenub.place(x=670,y=550)
-    getallcharactersb.place(x=510,y=70)
+    exitmenub.place(x=960,y=570)
+
+    entercharid.place(x=350,y=84,width=437,height=60)
+    setlevelchare.place(x=350,y=168,width=437,height=60)
+    modcharida.place(x=342,y=242)
+    modcharidr.place(x=342,y=362)
+
+    charidrequired = mainmenubgFHtkca.create_image(
+        301, 115,
+        image=requiredasterisk
+    )
+
+
+
+    # modcharidr.pack()
+    setlevelb.place(x=386,y=484)
+    # Charshowinfob.place(x=750,y=550)
+    # getallcharactersb.place(x=510,y=70)
 
 
 
 def loadMiscGui(slot):
-    loadPosition.pack_forget()
-    loadCharacters.pack_forget()
-    loadMisc.pack_forget()
+    global nothingtoseeheretxt
+    mainmenubgFHtkca.itemconfig(Mainmenuheader, image=transparentimg)
+    loadPosition.place_forget()
+    loadCharacters.place_forget()
+    loadMisc.place_forget()
 
-    # root.geometry('800x800')
-    misclabel.pack()
-    settokense.pack(pady=5)
-    settokensb.pack(pady=5)
-    skipfishclb.pack(pady=5)
+    nothingtoseeheretxt = mainmenubgFHtkca.create_text(
+        573, 325,
+        text='Updated Misc GUI coming in later update.\n\nThere\'s nothing to see here yet :(',
+        fill='white',
+        font=('Itim',26)
+    )
+
     exitmenub.place(x=960,y=570)
+
+    # misclabel.pack()
+    # settokense.pack(pady=5)
+    # settokensb.pack(pady=5)
+    # skipfishclb.pack(pady=5)
 
 
 xmodifycoordse.insert(0,string='X')
