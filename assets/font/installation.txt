@@ -1,0 +1,1 @@
+i was kinda lazy to code auto installation or local font loading cause it was difficult, so just install it or don't. i dont really care if you do much lmao
