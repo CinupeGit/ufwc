@@ -4,7 +4,10 @@
 # coding it in one file is gross because of well, organization
 
 # [pre settings you can change if you wanna just mess around]
-can_resize_window = True
+
+can_resize_window = False
+test_dialog = False
+
 
 from PIL import Image, ImageTk
 import os
@@ -13,6 +16,17 @@ import time
 import ctypes
 import configparser
 import threading
+import sys
+
+def showinfo(msg:str,title:str):
+    ctypes.windll.user32.MessageBoxW(0, msg, title, 0x40)
+
+def showerror(msg:str,title:str):
+    ctypes.windll.user32.MessageBoxW(0, msg, title, 0x10)
+
+if not os.path.exists('C:\\users\\'+os.getlogin()+'\\appdata\\roaming\\MMFApplications\\'):
+    showerror('FNAF World not found.','Location Error')
+    sys.exit()
 
 tke = tk.Entry
 tkl = tk.Label
@@ -28,7 +42,7 @@ bgc = '#1f1f1f'
 
 root = tk.Tk()
 
-root.config(bg=bgc)
+root.config(bg='white')
 root.title('Untitled FNaF World Cheat (UFWC)')
 root.iconbitmap(bitmapicon)
 root.geometry('1147x650+0+0')
@@ -141,13 +155,6 @@ createTitlescreenB3 = titlescreencanvas.create_text(
 
 titlescreencanvas.pack()
 
-# titlescreenbgl = tkl(image=titlescreenbg)
-# titlescreenbgl.pack()
-
-headerlabel = tkl(text=root.title(), bg=bgcd, fg='white', font=('Arial', 32))
-
-#headerlabel.pack(fill='x')
-
 os.chdir('C:\\users\\'+os.getlogin()+'\\appdata\\roaming\\MMFApplications\\')
 
 iniconfig.read('info')
@@ -214,9 +221,6 @@ if os.path.exists('fnafw3'):
 
 
 
-def showinfo(msg:str,title:str):
-    ctypes.windll.user32.MessageBoxW(0, msg, title, 0x40)
-
 
 def notice():
     root.withdraw()
@@ -258,37 +262,44 @@ def notice():
 
 
 def animFredbearLoop(frame=1):
-    if noticeroot.winfo_exists():
-        global FredbearAnim
-        anim_frames = [
-            animFredbear1,
-            animFredbear2,
-            animFredbear3,
-            animFredbear4,
-            animFredbear5,
-            animFredbear6,
-            animFredbear7,
-            animFredbear8,
-            animFredbear9,
-            animFredbear10
-        ]
+    global FredbearAnim
+    global noticetkca
+    global noticeroot
 
-        if noticeroot.focus_get():
-            noticetkca.itemconfig(FredbearAnim,image=anim_frames[frame%len(anim_frames)])
+    anim_frames = [
+        animFredbear1,
+        animFredbear2,
+        animFredbear3,
+        animFredbear4,
+        animFredbear5,
+        animFredbear6,
+        animFredbear7,
+        animFredbear8,
+        animFredbear9,
+        animFredbear10
+    ]
+
+    try:
+        noticetkca.itemconfig(FredbearAnim,image=anim_frames[frame%len(anim_frames)]) # - fixme, animation completely just broken out of nowhere, no idea why
         noticeroot.after(30,animFredbearLoop,(frame + 1)%len(anim_frames))
+    except:
+        pass
 
-
+if test_dialog:
+    threading.Thread(target=notice).start()
+    threading.Thread(target=animFredbearLoop).start()
 
 
 def settings():
     if not os.path.exists('ufwc'):
-        os.mkdir('ufwc')
-        notice()
+        threading.Thread(target=notice).start()
         threading.Thread(target=animFredbearLoop).start()
+        os.mkdir('ufwc')
     else:
         pass
 
 settings()
+
 
 
 
@@ -418,6 +429,7 @@ locyScott = 486
 
 
 characterlist = '''real quick side note that character versions are abbreviated example like NPuppet, TBonnie, and PBB (PBB is Phantom Balloon Boy, TBonnie Toy Bonnie, NPuppet NightmarePuppet.. etc)
+
 FreddyFazbear = '1'
 Bonnie = '2'
 Chica = '3'
@@ -539,7 +551,7 @@ loadPosition = tkb(text='Position',bg='green',fg='white',command=lambda: loadPos
 loadCharacters = tkb(text='Characters',bg='green',fg='white',command=lambda: loadCharGui(applyslot),image=charimg,relief='flat')
 loadMisc = tkb(text='Miscellaneous',bg='green',fg='white',command=lambda: loadMiscGui(applyslot),image=miscimg,relief='flat')
 
-unibuttoncolor = 'green'
+unibuttoncolor = 'green'#
 
 makemainmenubg = mainmenubgFHtkca.create_image(573, 325,image=titlescreenbg)
 
@@ -553,6 +565,8 @@ def syncbuttoncolors():
     showcharid.config(bg=unibuttoncolor)
     modifycoordsb.config(bg=unibuttoncolor)
     tppresetsb.config(bg=unibuttoncolor)
+    modifycoordsb.config(bg=unibuttoncolor)
+    setlevelb.config(bg=unibuttoncolor)
 
 
 
@@ -715,7 +729,7 @@ def addCharacterlist(slot,id:str,aor:str):
     checkifiseqid = id.lower()
 
     if id == '' or not checkifiseqid.isdigit() or not (1 <= int(id) <= 48):
-        showinfo('ID Field cannot be blank and must be numeric. Numeric value ranges from 1-48','UFWC')
+        showerror('ID Field cannot be blank and must be numeric. Numeric value ranges from 1-48','UFWC')
     else:
         if aor == 'a':
             charid = f'{id}have'
